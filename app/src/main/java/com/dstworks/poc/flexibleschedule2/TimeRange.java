@@ -2,6 +2,8 @@ package com.dstworks.poc.flexibleschedule2;
 
 import android.webkit.JavascriptInterface;
 
+import java.util.Calendar;
+
 /**
  * Created by 4d on 24.12.2017.
  */
@@ -49,6 +51,17 @@ public class TimeRange {
 
     public void setSeconds(byte seconds) {
         this.seconds = seconds;
+    }
+
+    /**
+     * @return time in millis from now
+     */
+    public long getExpectedTimeInMilliseconds() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, hours);
+        calendar.add(Calendar.MINUTE, minutes);
+        calendar.add(Calendar.SECOND, seconds);
+        return calendar.getTimeInMillis();
     }
 
     @Override

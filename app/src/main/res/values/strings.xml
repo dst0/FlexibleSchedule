@@ -97,7 +97,8 @@
     <string name="mmName">Minutes</string>
     <string name="hhName">Hours</string>
     <string name="ssName">Seconds</string>
-    <string name="upBtnLabel">Up</string>
-    <string name="downBtnLabel">Down</string>
+    <string name="upBtnLabel">↑</string>
+    <string name="downBtnLabel">↓</string>
+    <string name="delBtnLabel">x</string>
     <string name="completeBtnLabel">Complete</string>
 </resources>

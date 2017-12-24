@@ -25,6 +25,16 @@ public class SettingsUtils {
 
     private static List<TimeRange> ranges = new ArrayList<>();
 
+    public static int getCurrentRange() {
+        return currentRange;
+    }
+
+    public static void setCurrentRange(int currentRange) {
+        SettingsUtils.currentRange = currentRange;
+    }
+
+    private static int currentRange = 0;
+
     public static void addTimeRange(Context ctx, String name, int hours, int minutes, int seconds) {
         ranges.add(new TimeRange(name, (byte) hours, (byte) minutes, (byte) seconds));
         writeConfiguration(ctx);
@@ -32,10 +42,14 @@ public class SettingsUtils {
 
     /**
      * Saves ranges to file
+     *
      * @param ctx - any used activity instance
      */
     public static void writeConfiguration(Context ctx) {
         String config = "";
+
+        // write current range
+        config += currentRange + "\n";
         for (TimeRange range : ranges) {
             config += range.toString() + "\n";
         }
@@ -52,6 +66,7 @@ public class SettingsUtils {
 
     /**
      * Clears existing ranges and fills with ones from saved file
+     *
      * @param ctx - any used activity instance
      */
     public static void readConfiguration(Context ctx) {
@@ -61,12 +76,17 @@ public class SettingsUtils {
             String line;
             ranges.clear();
             String debugValue = "";
-            while ((line = reader.readLine()) != null) {
-                debugValue += line + "\n";
-                String[] values = line.split("`");
-                TimeRange range = new TimeRange(values[0], (byte) Integer.parseInt(values[1]),
-                        (byte) Integer.parseInt(values[2]), (byte) Integer.parseInt(values[3]));
-                ranges.add(range);
+            if ((line = reader.readLine()) != null) {
+                // read current range
+                currentRange = Integer.parseInt(line);
+
+                while ((line = reader.readLine()) != null) {
+                    debugValue += line + "\n";
+                    String[] values = line.split("`");
+                    TimeRange range = new TimeRange(values[0], (byte) Integer.parseInt(values[1]),
+                            (byte) Integer.parseInt(values[2]), (byte) Integer.parseInt(values[3]));
+                    ranges.add(range);
+                }
             }
             reader.close();
             System.out.println("readConfiguration() success: \n" + debugValue);

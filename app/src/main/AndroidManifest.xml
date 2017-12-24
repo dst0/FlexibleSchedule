@@ -23,6 +23,8 @@
             android:name=".NewTimerRangeActivity"
             android:label="@string/title_activity_new_timer_rang"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AlarmReceiverActivity">
+        </activity>
     </application>
 
 </manifest>

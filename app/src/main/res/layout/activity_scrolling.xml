@@ -37,27 +37,58 @@
     <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.dstworks.poc.flexibleschedule.ScrollingActivity"
         tools:showIn="@layout/activity_scrolling">
+
         <LinearLayout
+            android:id="@+id/rangeList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/rangeList">
+            android:orientation="vertical">
 
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/addBtn"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:tint="@android:color/holo_green_light"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="right|bottom"
+        app:srcCompat="@android:drawable/ic_input_add"
+        tools:layout_editor_absoluteX="313dp"
+        tools:layout_editor_absoluteY="494dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/runBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@android:color/holo_green_light"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_anchor="@+id/app_bar"
+        app:layout_anchorGravity="right|bottom"
+        app:rippleColor="@android:color/holo_green_light"
+        app:srcCompat="@android:drawable/ic_media_play"
+        tools:layout_editor_absoluteY="141dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/clearBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_anchor="@+id/app_bar"
+        app:layout_anchorGravity="left|bottom"
+        app:srcCompat="@android:drawable/ic_delete"
+        tools:layout_editor_absoluteY="141dp" />
 
 </android.support.design.widget.CoordinatorLayout>
