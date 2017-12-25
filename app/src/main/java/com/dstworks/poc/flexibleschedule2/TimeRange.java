@@ -1,6 +1,8 @@
 package com.dstworks.poc.flexibleschedule2;
 
-import android.webkit.JavascriptInterface;
+import android.app.PendingIntent;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 
 import java.util.Calendar;
 
@@ -9,16 +11,37 @@ import java.util.Calendar;
  */
 
 public class TimeRange {
+
+    private int viewId;
+    private ConstraintLayout view;
+
     private String name;
     private byte hours;
     private byte minutes;
     private byte seconds;
+    private PendingIntent pendingIntent;
 
     public TimeRange(String name, byte hours, byte minutes, byte seconds) {
         this.name = name;
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
+    }
+
+    public ConstraintLayout getView() {
+        return view;
+    }
+
+    public void setView(ConstraintLayout view) {
+        this.view = view;
+    }
+
+    public int getViewId() {
+        return viewId;
+    }
+
+    public void setViewId(int viewId) {
+        this.viewId = viewId;
     }
 
     public String getName() {
@@ -67,5 +90,24 @@ public class TimeRange {
     @Override
     public String toString() {
         return name + "`" + hours + "`" + minutes + "`" + seconds;
+    }
+
+    public PendingIntent getPendingIntent() {
+        return pendingIntent;
+    }
+
+    public void setPendingIntent(PendingIntent pendingIntent) {
+        this.pendingIntent = pendingIntent;
+    }
+
+    @NonNull
+    public String getText() {
+        return format(getHours()) + ":" +
+                format(getMinutes()) + ":" +
+                format(getSeconds());
+    }
+
+    private String format(byte value) {
+        return String.format("%02d", value);
     }
 }

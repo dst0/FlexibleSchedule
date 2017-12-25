@@ -6,9 +6,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +15,8 @@ import android.widget.Button;
 
 import java.io.IOException;
 import java.util.Calendar;
+
+import static android.view.View.INVISIBLE;
 
 public class AlarmReceiverActivity extends Activity {
     private MediaPlayer mMediaPlayer;
@@ -30,31 +31,116 @@ public class AlarmReceiverActivity extends Activity {
         setContentView(R.layout.activity_alarm_receiver);
 
         Button stopAlarm = findViewById(R.id.stopAlarm);
+        int currentRange = SettingsUtils.getCurrentRange();
+        if (SettingsUtils.getRanges().size() - 1 > currentRange) {
+            stopAlarm.setText("Go to next task");
+        } else {
+            stopAlarm.setText("Finish");
+        }
         stopAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMediaPlayer.stop();
 
-                // check if there are more ranges to do
                 int currentRange = SettingsUtils.getCurrentRange();
+                TimeRange timeRange = SettingsUtils.getRanges().get(currentRange);
+                // UI update
+                View rangeView = timeRange.getView();
+                View completeBtn = rangeView.findViewById(R.id.completeBtn);
+                completeBtn.setVisibility(INVISIBLE);
+                completeBtn.setOnClickListener(null);
+                rangeView.setBackgroundColor(ContextCompat.getColor(thisActivity, R.color.white));
+
+                // check if there are more ranges to do
                 if (SettingsUtils.getRanges().size() - 1 > currentRange) {
                     SettingsUtils.setCurrentRange(currentRange + 1);
-                    AlarmManager.runNextRange(thisActivity);
+                    SettingsUtils.writeConfiguration(thisActivity);
+                    AlarmManager.runCurrentRange(thisActivity);
                 }
 
                 finish();
             }
         });
 
-        Button delayAlarm = findViewById(R.id.delayAlarm);
-        delayAlarm.setOnClickListener(new View.OnClickListener() {
+        Button delayAlarm1 = findViewById(R.id.delayAlarm1);
+        delayAlarm1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMediaPlayer.stop();
 
                 Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.SECOND, 15);
-                AlarmManager.runNextRange(thisActivity, cal.getTimeInMillis());
+                cal.add(Calendar.MINUTE, 1);
+                AlarmManager.runCurrentRange(thisActivity, cal.getTimeInMillis());
+
+                finish();
+            }
+        });
+
+        Button delayAlarm5 = findViewById(R.id.delayAlarm5);
+        delayAlarm5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 5);
+                AlarmManager.runCurrentRange(thisActivity, cal.getTimeInMillis());
+
+                finish();
+            }
+        });
+
+        Button delayAlarm10 = findViewById(R.id.delayAlarm10);
+        delayAlarm10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 10);
+                AlarmManager.runCurrentRange(thisActivity, cal.getTimeInMillis());
+
+                finish();
+            }
+        });
+
+        Button delayAlarm15 = findViewById(R.id.delayAlarm15);
+        delayAlarm15.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 15);
+                AlarmManager.runCurrentRange(thisActivity, cal.getTimeInMillis());
+
+                finish();
+            }
+        });
+
+        Button delayAlarm30 = findViewById(R.id.delayAlarm30);
+        delayAlarm30.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 30);
+                AlarmManager.runCurrentRange(thisActivity, cal.getTimeInMillis());
+
+                finish();
+            }
+        });
+
+        Button delayAlarm60 = findViewById(R.id.delayAlarm60);
+        delayAlarm60.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, 60);
+                AlarmManager.runCurrentRange(thisActivity, cal.getTimeInMillis());
 
                 finish();
             }

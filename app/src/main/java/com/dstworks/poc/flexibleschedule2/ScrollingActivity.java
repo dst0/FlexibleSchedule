@@ -1,10 +1,5 @@
 package com.dstworks.poc.flexibleschedule2;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,9 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Toast;
-
-import java.util.Calendar;
 
 public class ScrollingActivity extends AppCompatActivity {
 
@@ -47,6 +39,17 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SettingsUtils.getRanges().clear();
+                SettingsUtils.setCurrentRange(0);
+                SettingsUtils.writeConfiguration(thisActivity);
+                updateView();
+            }
+        });
+
+        FloatingActionButton resetBtn = findViewById(R.id.resetBtn);
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SettingsUtils.setCurrentRange(0);
                 SettingsUtils.writeConfiguration(thisActivity);
                 updateView();
             }
@@ -56,7 +59,10 @@ public class ScrollingActivity extends AppCompatActivity {
         runBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                com.dstworks.poc.flexibleschedule2.AlarmManager.runNextRange(thisActivity);
+                // check if there are more ranges to do
+                if (SettingsUtils.getRanges().size() - 1 > SettingsUtils.getCurrentRange()) {
+                    com.dstworks.poc.flexibleschedule2.AlarmManager.runCurrentRange(thisActivity);
+                }
             }
         });
     }

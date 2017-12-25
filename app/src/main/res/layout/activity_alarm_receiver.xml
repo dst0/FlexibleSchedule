@@ -3,19 +3,49 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/stopAlarm"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="Go to next task" />
 
     <Button
-        android:id="@+id/delayAlarm"
-        android:layout_width="wrap_content"
+        android:id="@+id/delayAlarm1"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Delay" />
+        android:text="Delay 1 min" />
+
+    <Button
+        android:id="@+id/delayAlarm5"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Delay 5 min" />
+
+    <Button
+        android:id="@+id/delayAlarm10"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Delay 10 min" />
+
+    <Button
+        android:id="@+id/delayAlarm15"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Delay 15 min" />
+
+    <Button
+        android:id="@+id/delayAlarm30"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Delay 30 min" />
+
+    <Button
+        android:id="@+id/delayAlarm60"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Delay 60 min" />
 
 
 </LinearLayout>

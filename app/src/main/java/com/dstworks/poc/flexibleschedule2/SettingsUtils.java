@@ -93,5 +93,11 @@ public class SettingsUtils {
         } catch (Exception e) {
             System.out.println("Config file absent yet, nothing to read.");
         }
+
+        // fix old high number in currentRange
+        if (currentRange >= ranges.size()) {
+            currentRange = 0;
+            writeConfiguration(ctx);
+        }
     }
 }

@@ -91,4 +91,17 @@
         app:srcCompat="@android:drawable/ic_delete"
         tools:layout_editor_absoluteY="141dp" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/resetBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@color/colorPrimaryDark"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_anchor="@+id/app_bar"
+        app:layout_anchorGravity="bottom|center"
+        app:rippleColor="@color/colorPrimaryDark"
+        app:srcCompat="@android:drawable/ic_menu_revert"
+        tools:layout_editor_absoluteY="141dp" />
+
 </android.support.design.widget.CoordinatorLayout>

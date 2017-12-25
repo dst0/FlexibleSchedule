@@ -45,22 +45,18 @@ class UIBuilder {
     @NonNull
     private ConstraintLayout createRangeView(TimeRange range) {
         ConstraintLayout view = (ConstraintLayout) View.inflate(activity, R.layout.range_view_short, null);
+        range.setViewId(view.getId());
+        range.setView(view);
 
         TextView nameField = view.findViewById(R.id.name);
         nameField.setText(range.getName());
 
         TextView valueField = view.findViewById(R.id.value);
-        valueField.setText(format(range.getHours()) + ":" +
-                format(range.getMinutes()) + ":" +
-                format(range.getSeconds()));
+        valueField.setText(range.getText());
 
         if (SettingsUtils.getRanges().get(SettingsUtils.getCurrentRange()) == range) {
             view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
         }
         return view;
-    }
-
-    private String format(byte value) {
-        return String.format("%02d", value);
     }
 }
