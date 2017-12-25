@@ -6,17 +6,15 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Calendar;
-
-import static android.view.View.INVISIBLE;
 
 public class AlarmReceiverActivity extends Activity {
     private MediaPlayer mMediaPlayer;
@@ -30,8 +28,12 @@ public class AlarmReceiverActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_alarm_receiver);
 
-        Button stopAlarm = findViewById(R.id.stopAlarm);
         int currentRange = SettingsUtils.getCurrentRange();
+
+        TextView nameField = findViewById(R.id.name);
+        nameField.setText(SettingsUtils.getRanges().get(currentRange).getName());
+
+        Button stopAlarm = findViewById(R.id.stopAlarm);
         if (SettingsUtils.getRanges().size() - 1 > currentRange) {
             stopAlarm.setText("Go to next task");
         } else {

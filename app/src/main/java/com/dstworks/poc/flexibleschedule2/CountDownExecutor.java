@@ -23,6 +23,7 @@ public class CountDownExecutor {
             int minutes = seconds / 60;
             int hours = minutes / 60;
             seconds = seconds % 60;
+            minutes = minutes % 60;
 
             timerTimeRange.getValueTextView()
                     .setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
