@@ -3,6 +3,7 @@ package com.dstworks.poc.flexibleschedule2;
 import android.app.PendingIntent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -12,7 +13,6 @@ import java.util.Calendar;
 
 public class TimeRange {
 
-    private int viewId;
     private ConstraintLayout view;
 
     private String name;
@@ -21,11 +21,17 @@ public class TimeRange {
     private byte seconds;
     private PendingIntent pendingIntent;
 
+    private CountDownExecutor countDownExecutor;
+
     public TimeRange(String name, byte hours, byte minutes, byte seconds) {
         this.name = name;
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
+    }
+
+    public TextView getValueTextView() {
+        return view.findViewById(R.id.value);
     }
 
     public ConstraintLayout getView() {
@@ -34,14 +40,6 @@ public class TimeRange {
 
     public void setView(ConstraintLayout view) {
         this.view = view;
-    }
-
-    public int getViewId() {
-        return viewId;
-    }
-
-    public void setViewId(int viewId) {
-        this.viewId = viewId;
     }
 
     public String getName() {
@@ -100,6 +98,14 @@ public class TimeRange {
         this.pendingIntent = pendingIntent;
     }
 
+    public CountDownExecutor getCountDownExecutor() {
+        return countDownExecutor;
+    }
+
+    public void setCountDownExecutor(CountDownExecutor countDownExecutor) {
+        this.countDownExecutor = countDownExecutor;
+    }
+
     @NonNull
     public String getText() {
         return format(getHours()) + ":" +
@@ -109,5 +115,9 @@ public class TimeRange {
 
     private String format(byte value) {
         return String.format("%02d", value);
+    }
+
+    public boolean isStarted() {
+        return getPendingIntent() != null;
     }
 }

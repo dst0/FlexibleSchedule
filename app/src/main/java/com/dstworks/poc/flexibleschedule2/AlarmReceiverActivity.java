@@ -37,26 +37,13 @@ public class AlarmReceiverActivity extends Activity {
         } else {
             stopAlarm.setText("Finish");
         }
+
         stopAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMediaPlayer.stop();
 
-                int currentRange = SettingsUtils.getCurrentRange();
-                TimeRange timeRange = SettingsUtils.getRanges().get(currentRange);
-                // UI update
-                View rangeView = timeRange.getView();
-                View completeBtn = rangeView.findViewById(R.id.completeBtn);
-                completeBtn.setVisibility(INVISIBLE);
-                completeBtn.setOnClickListener(null);
-                rangeView.setBackgroundColor(ContextCompat.getColor(thisActivity, R.color.white));
-
-                // check if there are more ranges to do
-                if (SettingsUtils.getRanges().size() - 1 > currentRange) {
-                    SettingsUtils.setCurrentRange(currentRange + 1);
-                    SettingsUtils.writeConfiguration(thisActivity);
-                    AlarmManager.runCurrentRange(thisActivity);
-                }
+                AlarmManager.processCompleteAction(thisActivity);
 
                 finish();
             }

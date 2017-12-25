@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+
+    android:background="@color/white">
 
 
     <Button
@@ -52,46 +54,80 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/downBtn"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/downBtnLabel"
         android:textSize="20sp"
+        android:visibility="gone"
+        android:tint="@android:color/background_dark"
+        app:backgroundTint="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/upBtn"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@android:drawable/arrow_down_float" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/upBtn"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/upBtnLabel"
         android:textSize="20sp"
+        android:visibility="gone"
+        android:tint="@android:color/background_dark"
+        app:backgroundTint="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cancelBtn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:rippleColor="@android:color/background_dark"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cancelBtn"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:tint="@android:color/background_light"
+        app:backgroundTint="@android:color/darker_gray"
+        app:fabSize="mini"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/delBtn"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:rippleColor="@color/white"
+        app:srcCompat="@android:drawable/ic_media_pause"
+        tools:backgroundTintMode="src_atop" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/delBtn"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/delBtnLabel"
-        android:textSize="20sp"
+        app:fabSize="mini"
+        android:tint="@color/colorAccent"
+        app:backgroundTint="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        app:rippleColor="@android:color/black"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        tools:backgroundTintMode="src_atop" />
 
 </android.support.constraint.ConstraintLayout>

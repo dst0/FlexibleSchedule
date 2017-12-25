@@ -1,11 +1,6 @@
 package com.dstworks.poc.flexibleschedule2;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 
 /**
@@ -14,7 +9,6 @@ import android.widget.TextView;
  */
 public class CountDownExecutor {
 
-    private TextView timerTextView;
     private TimeRange timerTimeRange;
     private long startTime = 0;
     private long endTime = 0;
@@ -26,17 +20,17 @@ public class CountDownExecutor {
         public void run() {
             long millis = endTime - System.currentTimeMillis();
             int seconds = (int) (millis / 1000);
-            seconds = seconds % 60;
             int minutes = seconds / 60;
             int hours = minutes / 60;
+            seconds = seconds % 60;
 
-            timerTextView.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+            timerTimeRange.getValueTextView()
+                    .setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
             timerHandler.postDelayed(this, 1000);
         }
     };
 
-    public void run(TextView textView, TimeRange timeRange) {
-        timerTextView = textView;
+    public void run(TimeRange timeRange) {
         timerTimeRange = timeRange;
 
         startTime = System.currentTimeMillis();
@@ -46,7 +40,7 @@ public class CountDownExecutor {
 
     public void stop() {
         timerHandler.removeCallbacks(timerRunnable);
-        timerTextView.setText(timerTimeRange.getText());
+        timerTimeRange.getValueTextView().setText(timerTimeRange.getText());
     }
 
     public void onPause() {

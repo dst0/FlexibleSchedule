@@ -48,6 +48,11 @@ public class SettingsUtils {
     public static void writeConfiguration(Context ctx) {
         String config = "";
 
+        // fix incorrect currentRange if any
+        if (currentRange >= ranges.size()) {
+            currentRange = 0;
+        }
+
         // write current range
         config += currentRange + "\n";
         for (TimeRange range : ranges) {
