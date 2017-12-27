@@ -22,6 +22,7 @@ public class TimeRange {
     private PendingIntent pendingIntent;
 
     private CountDownExecutor countDownExecutor;
+    private long lastCompleteDate;
 
     public TimeRange(String name, byte hours, byte minutes, byte seconds) {
         this.name = name;
@@ -119,5 +120,13 @@ public class TimeRange {
 
     public boolean isStarted() {
         return getPendingIntent() != null;
+    }
+
+    public long getLastCompleteDate() {
+        return lastCompleteDate;
+    }
+
+    public void setLastCompleteDate(long lastCompleteDate) {
+        this.lastCompleteDate = lastCompleteDate;
     }
 }

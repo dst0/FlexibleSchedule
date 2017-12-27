@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerHorizontal="true"
-    android:layout_centerVertical="true"
-    tools:context="com.dstworks.poc.flexibleschedule2.NewTimerRangeActivity">
+    android:layout_centerVertical="true">
 
     <LinearLayout
         android:id="@+id/timerWrapper"
@@ -17,13 +15,20 @@
         android:paddingLeft="26dp"
         android:paddingRight="26dp">
 
+        <Button
+            android:id="@+id/addRangeButton"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/addRangeButtonLabel" />
+
         <EditText
             android:id="@+id/timerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textAlignment="center"
-            android:text="@string/timerName"
+            android:hint="@string/timerName"
             android:textColor="#000"
             android:textSize="30sp" />
 
@@ -119,13 +124,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/addRangeButton"
-            android:layout_width="90dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/addRangeButtonLabel" />
 
     </LinearLayout>
 </RelativeLayout>

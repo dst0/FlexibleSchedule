@@ -5,17 +5,32 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.TextView;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * Created by dst on 25.12.2017.
  */
 public class AlarmManager {
 
+    private static boolean isAlarmActive = false;
+
+    public static boolean isIsAlarmActive() {
+        return isAlarmActive;
+    }
 
     public static void runCurrentRange(final Activity activity) {
+        if (isAlarmActive) {
+            DataManager.log("runCurrentRange() wrong - already isAlarmActive==true");
+            return;
+        }
+        isAlarmActive = true;
         //Create a new PendingIntent and add it to the AlarmManager
-        int currentRange = SettingsUtils.getCurrentRange();
-        final TimeRange timeRange = SettingsUtils.getRanges().get(currentRange);
+        int currentRange = DataManager.getCurrentRange();
+        final TimeRange timeRange = DataManager.getRanges().get(currentRange);
 
         // UI update
         final View view = timeRange.getView();
@@ -26,8 +41,8 @@ public class AlarmManager {
         final View cancelBtn = view.findViewById(R.id.cancelBtn);
         cancelBtn.setVisibility(View.VISIBLE);
 
-        final View delBtn = view.findViewById(R.id.delBtn);
-        delBtn.setVisibility(View.INVISIBLE);
+        final View menuBtn = view.findViewById(R.id.menuBtn);
+        menuBtn.setVisibility(View.INVISIBLE);
 
         view.setBackgroundColor(ContextCompat.getColor(activity, R.color.orange));
 
@@ -65,7 +80,7 @@ public class AlarmManager {
 
     public static void runCurrentRange(Activity activity, long timeInMilliseconds) {
         //Create a new PendingIntent and add it to the AlarmManager
-        int currentRange = SettingsUtils.getCurrentRange();
+        int currentRange = DataManager.getCurrentRange();
         Intent intent = new Intent(activity, AlarmReceiverActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(activity,
                 currentRange, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -83,21 +98,37 @@ public class AlarmManager {
      * @param activity any activity
      */
     public static void processCompleteAction(Activity activity) {
-        TimeRange range = SettingsUtils.getRanges().get(SettingsUtils.getCurrentRange());
-        processCancelAction(activity);
+        try {
+            TimeRange range = DataManager.getRanges().get(DataManager.getCurrentRange());
+            Date date = new Date();
+            range.setLastCompleteDate(date.getTime());
 
-        // check if there are more ranges to do
-        int currentRange = SettingsUtils.getCurrentRange();
-        if (SettingsUtils.getRanges().size() - 1 > currentRange) {
-            // update color
-            range.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.white));
+            DataManager.log("Task " + range.toString() + " was finished at " + date.toString());
+            processCancelAction(activity);
 
-            SettingsUtils.setCurrentRange(currentRange + 1);
-            SettingsUtils.writeConfiguration(activity);
-            AlarmManager.runCurrentRange(activity);
-        } else {
-            // update color
-            range.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+            TextView lastCompleteDateField = range.getView().findViewById(R.id.lastCompleteDate);
+            long lastCompleteDate = range.getLastCompleteDate();
+            lastCompleteDateField.setText(lastCompleteDate == 0 ? "" :
+                    UIManager.DATE_FORMAT.format(Calendar.getInstance().getTime()));
+
+            // check if there are more ranges to do
+            int currentRange = DataManager.getCurrentRange();
+            if (DataManager.getRanges().size() - 1 > currentRange) {
+                // update color
+                int color = DataManager.getRanges().indexOf(range) % 2 == 0 ?
+                        R.color.white :
+                        R.color.grey;
+                range.getView().setBackgroundColor(ContextCompat.getColor(activity, color));
+
+                DataManager.setCurrentRange(currentRange + 1);
+                DataManager.writeConfiguration(activity);
+                AlarmManager.runCurrentRange(activity);
+            } else {
+                // update color
+                range.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+            }
+        } catch (Throwable e) {
+            System.err.println("can't execute processCancelAction(): " + e);
         }
     }
 
@@ -109,26 +140,32 @@ public class AlarmManager {
      * @param activity any activity
      */
     public static void processCancelAction(Activity activity) {
-        TimeRange range = SettingsUtils.getRanges().get(SettingsUtils.getCurrentRange());
-        View view = range.getView();
+        try {
+            TimeRange range = DataManager.getRanges().get(DataManager.getCurrentRange());
 
-        android.app.AlarmManager am =
-                (android.app.AlarmManager) activity.getSystemService(Activity.ALARM_SERVICE);
-        am.cancel(range.getPendingIntent());
-        range.getCountDownExecutor().stop();
-        range.setCountDownExecutor(null);
-        range.setPendingIntent(null);
+            android.app.AlarmManager am =
+                    (android.app.AlarmManager) activity.getSystemService(Activity.ALARM_SERVICE);
+            am.cancel(range.getPendingIntent());
+            range.getCountDownExecutor().stop();
+            range.setCountDownExecutor(null);
+            range.setPendingIntent(null);
 
-        View completeBtn = view.findViewById(R.id.completeBtn);
-        completeBtn.setVisibility(View.INVISIBLE);
-        completeBtn.setOnClickListener(null);
+            isAlarmActive = false;
 
-        View cancelBtn = view.findViewById(R.id.cancelBtn);
-        cancelBtn.setVisibility(View.INVISIBLE);
+            View view = range.getView();
+            View completeBtn = view.findViewById(R.id.completeBtn);
+            completeBtn.setVisibility(View.INVISIBLE);
+            completeBtn.setOnClickListener(null);
 
-        View delBtn = view.findViewById(R.id.delBtn);
-        delBtn.setVisibility(View.VISIBLE);
+            View cancelBtn = view.findViewById(R.id.cancelBtn);
+            cancelBtn.setVisibility(View.INVISIBLE);
 
-        view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+            View menuBtn = view.findViewById(R.id.menuBtn);
+            menuBtn.setVisibility(View.VISIBLE);
+
+            view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+        } catch (Throwable e) {
+            System.err.println("can't execute processCancelAction(): " + e);
+        }
     }
 }

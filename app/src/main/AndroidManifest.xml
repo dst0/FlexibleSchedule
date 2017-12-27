@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dstworks.poc.flexibleschedule2">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-    <uses-permission android:name="android.permission.INSTANT_APP_FOREGROUND_SERVICE"></uses-permission>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"></uses-permission>
-    <uses-permission android:name="android.permission.SET_ALARM"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INSTANT_APP_FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +29,11 @@
             android:name=".NewTimerRangeActivity"
             android:label="@string/title_activity_new_timer_rang"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".AlarmReceiverActivity"></activity>
+        <activity android:name=".AlarmReceiverActivity" />
+        <activity
+            android:name=".EditTimerRangeActivity"
+            android:label="@string/title_activity_edit_timer_range"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

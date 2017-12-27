@@ -10,9 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 
-public class NewTimerRangeActivity extends AppCompatActivity {
+public class EditTimerRangeActivity extends AppCompatActivity {
 
-    private Button addRangeButton;
+    private Button saveRangeButton;
 
     private NumberPicker hoursField;
     private EditText nameField;
@@ -20,12 +20,16 @@ public class NewTimerRangeActivity extends AppCompatActivity {
     private NumberPicker secondsField;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.timer_range_view);
 
-        addRangeButton = (Button) findViewById(R.id.addRangeButton);
-        System.out.println(addRangeButton);
+        Bundle b = getIntent().getExtras();
+        int rangeIndex = (int) b.get("rangeIndex");
+        final TimeRange range = DataManager.getRanges().get(rangeIndex);
+
+        saveRangeButton = (Button) findViewById(R.id.addRangeButton);
+        System.out.println(saveRangeButton);
 
         hoursField = findViewById(R.id.hour);
         //Populate NumberPicker values from minimum and maximum value range
@@ -33,6 +37,8 @@ public class NewTimerRangeActivity extends AppCompatActivity {
         hoursField.setMaxValue(99);
         //Gets whether the selector wheel wraps when reaching the min/max value.
         hoursField.setWrapSelectorWheel(true);
+        hoursField.setValue(range.getHours());
+
 
         minutesField = findViewById(R.id.minute);
         //Populate NumberPicker values from minimum and maximum value range
@@ -40,6 +46,7 @@ public class NewTimerRangeActivity extends AppCompatActivity {
         minutesField.setMaxValue(59);
         //Gets whether the selector wheel wraps when reaching the min/max value.
         minutesField.setWrapSelectorWheel(true);
+        minutesField.setValue(range.getMinutes());
 
         secondsField = findViewById(R.id.seconds);
         //Populate NumberPicker values from minimum and maximum value range
@@ -47,11 +54,12 @@ public class NewTimerRangeActivity extends AppCompatActivity {
         secondsField.setMaxValue(59);
         //Gets whether the selector wheel wraps when reaching the min/max value.
         secondsField.setWrapSelectorWheel(true);
+        secondsField.setValue(range.getSeconds());
 
         nameField = findViewById(R.id.timerName);
-        final NewTimerRangeActivity activity = this;
+        nameField.setText(range.getName());
 
-        addRangeButton.setOnClickListener(new View.OnClickListener() {
+        saveRangeButton.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
             public void onClick(View view) {
                 String name = nameField.getText().toString();
@@ -60,11 +68,14 @@ public class NewTimerRangeActivity extends AppCompatActivity {
                 int seconds = secondsField.getValue();
                 System.out.println(String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":"
                         + String.format("%02d", seconds));
-                DataManager.addTimeRange(activity, name, hours, minutes, seconds);
+
+                range.setName(name);
+                range.setHours((byte) hours);
+                range.setMinutes((byte) minutes);
+                range.setSeconds((byte) seconds);
                 finish();
             }
         });
-
     }
 
 }

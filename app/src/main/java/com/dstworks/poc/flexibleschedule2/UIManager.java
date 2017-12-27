@@ -1,14 +1,18 @@
 package com.dstworks.poc.flexibleschedule2;
 
-import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -19,6 +23,7 @@ import java.util.List;
 class UIManager {
     private final AppCompatActivity activity;
     private final LinearLayout rangeList;
+    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss yyyy MMM dd");
 
     public UIManager(AppCompatActivity activity) {
         this.activity = activity;
@@ -28,9 +33,10 @@ class UIManager {
     public void update() {
         clear();
 
-        List<TimeRange> ranges = SettingsUtils.getRanges();
+        List<TimeRange> ranges = DataManager.getRanges();
         for (TimeRange range : ranges) {
-            addRangeView(rangeList, range);
+            ConstraintLayout view = createRangeView(range);
+            rangeList.addView(view);
         }
     }
 
@@ -38,64 +44,170 @@ class UIManager {
         rangeList.removeAllViews();
     }
 
-    public void addRangeView(LinearLayout rangeList, TimeRange range) {
-        ConstraintLayout view = createRangeView(range);
-        rangeList.addView(view);
-    }
-
     @NonNull
     private ConstraintLayout createRangeView(final TimeRange range) {
-        ConstraintLayout view = (ConstraintLayout) View.inflate(
-                activity,
-                R.layout.range_view_short,
-                null
-        );
-        range.setView(view);
+        ConstraintLayout view = null;
+        try {
+            view = (ConstraintLayout) View.inflate(
+                    activity,
+                    R.layout.timer_range_view_short,
+                    null
+            );
+            range.setView(view);
 
-        TextView nameField = view.findViewById(R.id.name);
-        nameField.setText(range.getName());
+            TextView nameField = view.findViewById(R.id.name);
+            nameField.setText(range.getName());
 
-        TextView valueField = view.findViewById(R.id.value);
-        valueField.setText(range.getText());
+            TextView valueField = view.findViewById(R.id.value);
+            valueField.setText(range.getText());
 
+            TextView lastCompleteDateField = view.findViewById(R.id.lastCompleteDate);
+            long lastCompleteDate = range.getLastCompleteDate();
+            lastCompleteDateField.setText(lastCompleteDate == 0 ? "" :
+                    DATE_FORMAT.format(Calendar.getInstance().getTime()));
 
-        final View delBtn = view.findViewById(R.id.delBtn);
-        delBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SettingsUtils.getRanges().remove(range);
-                SettingsUtils.writeConfiguration(activity);
-                update();
-            }
-        });
-        if (range.isStarted()) {
-            final View completeBtn = view.findViewById(R.id.completeBtn);
-            completeBtn.setVisibility(View.VISIBLE);
-
-            final View cancelBtn = view.findViewById(R.id.cancelBtn);
-            cancelBtn.setVisibility(View.VISIBLE);
-
-            delBtn.setVisibility(View.INVISIBLE);
-
-            view.setBackgroundColor(ContextCompat.getColor(activity, R.color.orange));
-            completeBtn.setOnClickListener(new View.OnClickListener() {
+            final View delBtn = view.findViewById(R.id.delBtn);
+            delBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlarmManager.processCompleteAction(activity);
+                    try {
+                        List<TimeRange> ranges = DataManager.getRanges();
+                        int index = ranges.indexOf(range);
+                        int currentRange = DataManager.getCurrentRange();
+                        // can't remove started time range
+                        if (AlarmManager.isIsAlarmActive() && index == currentRange) {
+                            return;
+                        }
+                        if (index < currentRange ||
+                                (index == ranges.size() - 1
+                                        && index == currentRange)) {
+                            DataManager.setCurrentRange(currentRange - 1);
+                        }
+                        ranges.remove(range);
+                        DataManager.writeConfiguration(activity);
+                        update();
+                    } catch (Throwable e) {
+                        System.err.println("can't execute processCancelAction(): " + e);
+                    }
                 }
             });
-            cancelBtn.setOnClickListener(new View.OnClickListener() {
+            final View menuWrapper = view.findViewById(R.id.menuWrapper);
+            final View menuBtn = view.findViewById(R.id.menuBtn);
+            menuBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlarmManager.processCancelAction(activity);
+                    if (menuWrapper.getVisibility() == View.GONE) {
+                        menuWrapper.setVisibility(View.VISIBLE);
+                    } else {
+                        menuWrapper.setVisibility(View.GONE);
+                    }
                 }
             });
-        } else {
-            if (SettingsUtils.getRanges().get(SettingsUtils.getCurrentRange()) == range) {
-                view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+
+            // edit btn
+            FloatingActionButton editBtn = view.findViewById(R.id.editBtn);
+            editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(activity, EditTimerRangeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    // send index to activity
+                    List<TimeRange> ranges = DataManager.getRanges();
+                    int index = ranges.indexOf(range);
+
+                    Bundle b = new Bundle();
+                    b.putInt("rangeIndex", index);
+                    intent.putExtras(b);
+
+                    activity.startActivity(intent);
+                }
+            });
+
+            // move up btn
+            final View upBtn = view.findViewById(R.id.upBtn);
+            upBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        List<TimeRange> ranges = DataManager.getRanges();
+                        int index = ranges.indexOf(range);
+                        int currentRange = DataManager.getCurrentRange();
+                        if (index > 0) {
+                            if (index == currentRange) {
+                                DataManager.setCurrentRange(currentRange - 1);
+                            } else if (index - 1 == currentRange) {
+                                DataManager.setCurrentRange(currentRange + 1);
+                            }
+                            ranges.remove(range);
+                            ranges.add(index - 1, range);
+                            DataManager.writeConfiguration(activity);
+                            update();
+                        }
+                    } catch (Throwable e) {
+                        System.err.println("can't execute processCancelAction(): " + e);
+                    }
+                }
+            });
+            // move down btn
+            final View downBtn = view.findViewById(R.id.downBtn);
+            downBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        List<TimeRange> ranges = DataManager.getRanges();
+                        int index = ranges.indexOf(range);
+                        int currentRange = DataManager.getCurrentRange();
+                        if (index < ranges.size() - 1) {
+                            if (index == currentRange) {
+                                DataManager.setCurrentRange(currentRange + 1);
+                            } else if (index + 1 == currentRange) {
+                                DataManager.setCurrentRange(currentRange - 1);
+                            }
+                            ranges.remove(range);
+                            ranges.add(index + 1, range);
+                            DataManager.writeConfiguration(activity);
+                            update();
+                        }
+                    } catch (Throwable e) {
+                        System.err.println("can't execute processCancelAction(): " + e);
+                    }
+                }
+            });
+            if (range.isStarted()) {
+                final View completeBtn = view.findViewById(R.id.completeBtn);
+                completeBtn.setVisibility(View.VISIBLE);
+
+                final View cancelBtn = view.findViewById(R.id.cancelBtn);
+                cancelBtn.setVisibility(View.VISIBLE);
+
+                menuBtn.setVisibility(View.INVISIBLE);
+
+                view.setBackgroundColor(ContextCompat.getColor(activity, R.color.orange));
+                completeBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlarmManager.processCompleteAction(activity);
+                    }
+                });
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlarmManager.processCancelAction(activity);
+                    }
+                });
             } else {
-                view.setBackgroundColor(ContextCompat.getColor(activity, R.color.white));
+                if (DataManager.getRanges().get(DataManager.getCurrentRange()) == range) {
+                    view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
+                } else {
+                    int color = DataManager.getRanges().indexOf(range) % 2 == 0 ?
+                            R.color.white :
+                            R.color.grey;
+                    view.setBackgroundColor(ContextCompat.getColor(activity, color));
+                }
             }
+        } catch (Throwable e) {
+            System.err.println("can't execute createRangeView(): " + e);
         }
         return view;
     }

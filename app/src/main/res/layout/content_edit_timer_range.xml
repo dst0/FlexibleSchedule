@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.dstworks.poc.flexibleschedule2.NewTimerRangeActivity"
+    tools:context="com.dstworks.poc.flexibleschedule2.EditTimerRangeActivity"
     tools:showIn="@layout/timer_range_view">
 
 </android.support.constraint.ConstraintLayout>

@@ -3,9 +3,12 @@ package com.dstworks.poc.flexibleschedule2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +41,12 @@ public class ScrollingActivity extends AppCompatActivity {
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SettingsUtils.getRanges().clear();
-                SettingsUtils.setCurrentRange(0);
-                SettingsUtils.writeConfiguration(thisActivity);
-                updateView();
+                if (!AlarmManager.isIsAlarmActive()) {
+                    DataManager.getRanges().clear();
+                    DataManager.setCurrentRange(0);
+                    DataManager.writeConfiguration(thisActivity);
+                    updateView();
+                }
             }
         });
 
@@ -49,9 +54,11 @@ public class ScrollingActivity extends AppCompatActivity {
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SettingsUtils.setCurrentRange(0);
-                SettingsUtils.writeConfiguration(thisActivity);
-                updateView();
+                if (!AlarmManager.isIsAlarmActive()) {
+                    DataManager.setCurrentRange(0);
+                    DataManager.writeConfiguration(thisActivity);
+                    updateView();
+                }
             }
         });
 
@@ -60,7 +67,7 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // check if there are more ranges to do
-                if (SettingsUtils.getRanges().size() > SettingsUtils.getCurrentRange()) {
+                if (DataManager.getRanges().size() > DataManager.getCurrentRange()) {
                     com.dstworks.poc.flexibleschedule2.AlarmManager.runCurrentRange(thisActivity);
                 }
             }
@@ -71,7 +78,7 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        SettingsUtils.readConfiguration(this);
+        DataManager.readConfiguration(this);
         uiManager = new UIManager(this);
         updateView();
     }

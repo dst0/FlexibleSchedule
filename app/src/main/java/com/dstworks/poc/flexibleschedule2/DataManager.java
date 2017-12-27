@@ -1,36 +1,46 @@
 package com.dstworks.poc.flexibleschedule2;
 
 import android.content.Context;
-import android.util.Range;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Queue;
+import java.util.StringJoiner;
 
 /**
  * Created by 4d on 24.12.2017.
  */
 
-public class SettingsUtils {
+public class DataManager {
     private static final String CONFIG_FILE_NAME = "config.txt";
+    private static final String LOG_FILE_NAME = "log.txt";
 
     public static List<TimeRange> getRanges() {
         return ranges;
     }
 
     private static List<TimeRange> ranges = new ArrayList<>();
+    private static List<String> logList = new ArrayList<>();
+    private static List<String> logToWrite = new ArrayList<>();
+
+    public static void log(String message) {
+        System.out.println(message);
+        logToWrite.add(message);
+        logList.add(message);
+    }
 
     public static int getCurrentRange() {
         return currentRange;
     }
 
     public static void setCurrentRange(int currentRange) {
-        SettingsUtils.currentRange = currentRange;
+        DataManager.currentRange = currentRange;
     }
 
     private static int currentRange = 0;
@@ -49,7 +59,7 @@ public class SettingsUtils {
         String config = "";
 
         // fix incorrect currentRange if any
-        if (currentRange >= ranges.size()) {
+        if (currentRange >= ranges.size() || currentRange < 0) {
             currentRange = 0;
         }
 
@@ -59,12 +69,27 @@ public class SettingsUtils {
             config += range.toString() + "\n";
         }
         try (FileOutputStream openFileOutput =
-                     ctx.openFileOutput(CONFIG_FILE_NAME, Context.MODE_PRIVATE);) {
+                     ctx.openFileOutput(CONFIG_FILE_NAME, Context.MODE_PRIVATE)) {
 
             openFileOutput.write(config.getBytes());
             System.out.println("writeConfiguration() success: \n" + config);
         } catch (Exception e) {
             System.out.println("writeConfiguration() error: " + e);
+            e.printStackTrace();
+        }
+
+        // write last logs
+        String logStrToWrite = "\n";
+        while (!logToWrite.isEmpty()) {
+            logStrToWrite += logToWrite.remove(0) + "\n";
+        }
+        try (FileOutputStream openFileOutput =
+                     ctx.openFileOutput(LOG_FILE_NAME, Context.MODE_APPEND)) {
+
+            openFileOutput.write(logStrToWrite.getBytes());
+            System.out.println("writeConfiguration() log success: \n" + logStrToWrite);
+        } catch (Exception e) {
+            System.out.println("writeConfiguration() log error: " + e);
             e.printStackTrace();
         }
     }
@@ -76,7 +101,7 @@ public class SettingsUtils {
      */
     public static void readConfiguration(Context ctx) {
         try (FileInputStream fileInputStream =
-                     ctx.openFileInput(CONFIG_FILE_NAME);) {
+                     ctx.openFileInput(CONFIG_FILE_NAME)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
             String line;
             ranges.clear();
@@ -100,7 +125,7 @@ public class SettingsUtils {
         }
 
         // fix old high number in currentRange
-        if (currentRange >= ranges.size()) {
+        if (currentRange >= ranges.size() || currentRange < 0) {
             currentRange = 0;
             writeConfiguration(ctx);
         }

@@ -28,13 +28,13 @@ public class AlarmReceiverActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_alarm_receiver);
 
-        int currentRange = SettingsUtils.getCurrentRange();
+        int currentRange = DataManager.getCurrentRange();
 
         TextView nameField = findViewById(R.id.name);
-        nameField.setText(SettingsUtils.getRanges().get(currentRange).getName());
+        nameField.setText(DataManager.getRanges().get(currentRange).getName());
 
         Button stopAlarm = findViewById(R.id.stopAlarm);
-        if (SettingsUtils.getRanges().size() - 1 > currentRange) {
+        if (DataManager.getRanges().size() - 1 > currentRange) {
             stopAlarm.setText("Go to next task");
         } else {
             stopAlarm.setText("Finish");

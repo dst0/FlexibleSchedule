@@ -15,33 +15,53 @@ public class CountDownExecutor {
 
     //runs without a timer by reposting this handler at the end of the runnable
     Handler timerHandler = new Handler();
-    Runnable timerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            long millis = endTime - System.currentTimeMillis();
-            int seconds = (int) (millis / 1000);
-            int minutes = seconds / 60;
-            int hours = minutes / 60;
-            seconds = seconds % 60;
-            minutes = minutes % 60;
+    Runnable timerRunnable;
 
-            timerTimeRange.getValueTextView()
-                    .setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-            timerHandler.postDelayed(this, 1000);
+    {
+        try {
+            timerRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        long millis = endTime - System.currentTimeMillis();
+                        int seconds = (int) (millis / 1000);
+                        int minutes = seconds / 60;
+                        int hours = minutes / 60;
+                        seconds = seconds % 60;
+                        minutes = minutes % 60;
+
+                        timerTimeRange.getValueTextView()
+                                .setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+                    } catch (Throwable e) {
+                        System.err.println("can't update view from countdown handler: " + e);
+                    }
+                    timerHandler.postDelayed(this, 1000);
+                }
+            };
+        } catch (Throwable e) {
+            System.err.println("can't create countdown handler: " + e);
         }
-    };
+    }
 
     public void run(TimeRange timeRange) {
-        timerTimeRange = timeRange;
+        try {
+            timerTimeRange = timeRange;
 
-        startTime = System.currentTimeMillis();
-        endTime = timerTimeRange.getExpectedTimeInMilliseconds();
-        timerHandler.postDelayed(timerRunnable, 0);
+            startTime = System.currentTimeMillis();
+            endTime = timerTimeRange.getExpectedTimeInMilliseconds();
+            timerHandler.postDelayed(timerRunnable, 0);
+        } catch (Throwable e) {
+            System.err.println("can't run countdown handler: " + e);
+        }
     }
 
     public void stop() {
-        timerHandler.removeCallbacks(timerRunnable);
-        timerTimeRange.getValueTextView().setText(timerTimeRange.getText());
+        try {
+            timerHandler.removeCallbacks(timerRunnable);
+            timerTimeRange.getValueTextView().setText(timerTimeRange.getText());
+        } catch (Throwable e) {
+            System.err.println("can't run countdown handler: " + e);
+        }
     }
 
     public void onPause() {
