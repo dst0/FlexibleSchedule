@@ -37,6 +37,16 @@ public class ScrollingActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton showLogBtn = findViewById(R.id.showLogBtn);
+        showLogBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(thisActivity, LogScrollingActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+
         FloatingActionButton clearBtn = findViewById(R.id.clearBtn);
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override

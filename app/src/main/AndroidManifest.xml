@@ -33,6 +33,10 @@
         <activity
             android:name=".EditTimerRangeActivity"
             android:label="@string/title_activity_edit_timer_range"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LogScrollingActivity"
+            android:label="@string/title_activity_log_scrolling"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

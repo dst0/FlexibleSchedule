@@ -2,18 +2,13 @@ package com.dstworks.poc.flexibleschedule2;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
-import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Queue;
-import java.util.StringJoiner;
 
 /**
  * Created by 4d on 24.12.2017.
@@ -43,6 +38,10 @@ public class DataManager {
         System.err.println(message);
         logToWrite.add(message);
         logList.add(message);
+    }
+
+    public static List<String> getLog() {
+        return logList;
     }
 
     public static int getCurrentRange() {
@@ -132,6 +131,24 @@ public class DataManager {
             System.out.println("readConfiguration() success: \n" + debugValue);
         } catch (Exception e) {
             System.out.println("Config file absent yet, nothing to read.");
+        }
+
+        try (FileInputStream fileInputStream =
+                     ctx.openFileInput(LOG_FILE_NAME)) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+            String line;
+            logList.clear();
+            String debugValue = "";
+
+            while ((line = reader.readLine()) != null) {
+                debugValue += line + "\n";
+                logList.add(line);
+            }
+
+            reader.close();
+            System.out.println("readConfiguration() log success: \n" + debugValue);
+        } catch (Exception e) {
+            System.out.println("log file absent yet, nothing to read.");
         }
 
         // fix old high number in currentRange

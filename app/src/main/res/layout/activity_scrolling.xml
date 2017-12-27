@@ -68,6 +68,19 @@
         tools:layout_editor_absoluteY="494dp"/>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/showLogBtn"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@android:color/holo_green_light"
+        app:backgroundTint="@android:color/background_light"
+        app:layout_anchor="@+id/app_bar"
+        app:layout_anchorGravity="left|center"
+        app:srcCompat="@android:drawable/ic_dialog_alert"
+        tools:layout_editor_absoluteX="313dp"
+        tools:layout_editor_absoluteY="494dp" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/runBtn"
         android:layout_width="50dp"
         android:layout_height="50dp"

@@ -102,4 +102,5 @@
     <string name="delBtnLabel">x</string>
     <string name="completeBtnLabel">Complete</string>
     <string name="title_activity_edit_timer_range">EditTimerRangeActivity</string>
+    <string name="title_activity_log_scrolling">LogScrollingActivity</string>
 </resources>
