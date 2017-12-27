@@ -106,10 +106,14 @@ public class AlarmManager {
             DataManager.log("Task " + range.toString() + " was finished at " + date.toString());
             processCancelAction(activity);
 
-            TextView lastCompleteDateField = range.getView().findViewById(R.id.lastCompleteDate);
-            long lastCompleteDate = range.getLastCompleteDate();
-            lastCompleteDateField.setText(lastCompleteDate == 0 ? "" :
-                    UIManager.DATE_FORMAT.format(Calendar.getInstance().getTime()));
+            try {
+                TextView lastCompleteDateField = range.getView().findViewById(R.id.lastCompleteDate);
+                long lastCompleteDate = range.getLastCompleteDate();
+                lastCompleteDateField.setText(lastCompleteDate == 0 ? "" :
+                        UIManager.DATE_FORMAT.format(Calendar.getInstance().getTime()));
+            } catch (Throwable e) {
+                DataManager.err("can't update lastCompleteDateField: " + e);
+            }
 
             // check if there are more ranges to do
             int currentRange = DataManager.getCurrentRange();
@@ -128,7 +132,7 @@ public class AlarmManager {
                 range.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
             }
         } catch (Throwable e) {
-            System.err.println("can't execute processCancelAction(): " + e);
+            DataManager.err("can't execute processCancelAction(): " + e);
         }
     }
 
@@ -165,7 +169,7 @@ public class AlarmManager {
 
             view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
         } catch (Throwable e) {
-            System.err.println("can't execute processCancelAction(): " + e);
+            DataManager.err("can't execute processCancelAction(): " + e);
         }
     }
 }

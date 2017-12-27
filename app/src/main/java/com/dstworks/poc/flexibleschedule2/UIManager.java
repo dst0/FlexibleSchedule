@@ -22,7 +22,7 @@ import java.util.List;
 
 class UIManager {
     private final AppCompatActivity activity;
-    private final LinearLayout rangeList;
+    public static LinearLayout rangeList;
     public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss yyyy MMM dd");
 
     public UIManager(AppCompatActivity activity) {
@@ -87,7 +87,27 @@ class UIManager {
                         DataManager.writeConfiguration(activity);
                         update();
                     } catch (Throwable e) {
-                        System.err.println("can't execute processCancelAction(): " + e);
+                        DataManager.err("can't execute processCancelAction(): " + e);
+                    }
+                }
+            });
+
+            final View makeCurrentBtn = view.findViewById(R.id.makeCurrentBtn);
+            makeCurrentBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        List<TimeRange> ranges = DataManager.getRanges();
+                        int index = ranges.indexOf(range);
+                        int currentRange = DataManager.getCurrentRange();
+                        // can't remove started time range
+                        if (!AlarmManager.isIsAlarmActive() && index != currentRange) {
+                            DataManager.setCurrentRange(index);
+                            DataManager.writeConfiguration(activity);
+                            update();
+                        }
+                    } catch (Throwable e) {
+                        DataManager.err("can't execute makeCurrentBtn(): " + e);
                     }
                 }
             });
@@ -145,7 +165,7 @@ class UIManager {
                             update();
                         }
                     } catch (Throwable e) {
-                        System.err.println("can't execute processCancelAction(): " + e);
+                        DataManager.err("can't execute processCancelAction(): " + e);
                     }
                 }
             });
@@ -170,7 +190,7 @@ class UIManager {
                             update();
                         }
                     } catch (Throwable e) {
-                        System.err.println("can't execute processCancelAction(): " + e);
+                        DataManager.err("can't execute processCancelAction(): " + e);
                     }
                 }
             });
@@ -207,7 +227,7 @@ class UIManager {
                 }
             }
         } catch (Throwable e) {
-            System.err.println("can't execute createRangeView(): " + e);
+            DataManager.err("can't execute createRangeView(): " + e);
         }
         return view;
     }

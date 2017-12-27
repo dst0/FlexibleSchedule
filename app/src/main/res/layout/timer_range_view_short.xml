@@ -136,6 +136,25 @@
             app:srcCompat="@android:drawable/ic_menu_edit" />
 
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/makeCurrentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="20sp"
+            android:tint="@color/green"
+            app:backgroundTint="@android:color/darker_gray"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/upBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:rippleColor="@color/green"
+            app:srcCompat="@android:drawable/ic_media_next" />
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/downBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

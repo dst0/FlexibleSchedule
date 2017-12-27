@@ -66,9 +66,11 @@ public class ScrollingActivity extends AppCompatActivity {
         runBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // check if there are more ranges to do
-                if (DataManager.getRanges().size() > DataManager.getCurrentRange()) {
-                    com.dstworks.poc.flexibleschedule2.AlarmManager.runCurrentRange(thisActivity);
+                if (!AlarmManager.isIsAlarmActive()) {
+                    // check if there are more ranges to do
+                    if (DataManager.getRanges().size() > DataManager.getCurrentRange()) {
+                        com.dstworks.poc.flexibleschedule2.AlarmManager.runCurrentRange(thisActivity);
+                    }
                 }
             }
         });

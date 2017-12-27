@@ -33,13 +33,13 @@ public class CountDownExecutor {
                         timerTimeRange.getValueTextView()
                                 .setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
                     } catch (Throwable e) {
-                        System.err.println("can't update view from countdown handler: " + e);
+                        DataManager.err("can't update view from countdown handler: " + e);
                     }
                     timerHandler.postDelayed(this, 1000);
                 }
             };
         } catch (Throwable e) {
-            System.err.println("can't create countdown handler: " + e);
+            DataManager.err("can't create countdown handler: " + e);
         }
     }
 
@@ -51,7 +51,7 @@ public class CountDownExecutor {
             endTime = timerTimeRange.getExpectedTimeInMilliseconds();
             timerHandler.postDelayed(timerRunnable, 0);
         } catch (Throwable e) {
-            System.err.println("can't run countdown handler: " + e);
+            DataManager.err("can't run countdown handler: " + e);
         }
     }
 
@@ -60,7 +60,7 @@ public class CountDownExecutor {
             timerHandler.removeCallbacks(timerRunnable);
             timerTimeRange.getValueTextView().setText(timerTimeRange.getText());
         } catch (Throwable e) {
-            System.err.println("can't run countdown handler: " + e);
+            DataManager.err("can't run countdown handler: " + e);
         }
     }
 

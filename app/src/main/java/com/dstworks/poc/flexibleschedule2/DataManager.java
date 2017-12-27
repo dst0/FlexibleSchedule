@@ -1,6 +1,8 @@
 package com.dstworks.poc.flexibleschedule2;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -31,6 +33,14 @@ public class DataManager {
 
     public static void log(String message) {
         System.out.println(message);
+        logToWrite.add(message);
+        logList.add(message);
+    }
+
+    public static void err(String message) {
+        Snackbar.make(UIManager.rangeList.getRootView(), message, Snackbar.LENGTH_LONG)
+                .setAction("Error:", null).show();
+        System.err.println(message);
         logToWrite.add(message);
         logList.add(message);
     }
