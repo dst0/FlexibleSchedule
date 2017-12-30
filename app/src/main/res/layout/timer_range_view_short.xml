@@ -36,19 +36,31 @@
             android:text="@string/hhName"
             android:textAlignment="viewStart"
             android:textColor="#000"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/lastStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="11:11:11 Nov 15 1991"
+        android:textAlignment="viewEnd"
+        android:textColor="?android:attr/colorActivatedHighlight"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ssWrapper"
+        app:layout_constraintEnd_toStartOf="@+id/lastCompleteDate" />
 
     <TextView
         android:id="@+id/lastCompleteDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="11:11:11 1991 Nov 15"
+        android:text="11:11:11 Nov 15 1991"
         android:textAlignment="viewEnd"
-        android:textColor="#555"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/menuBtn"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ssWrapper"
         app:layout_constraintEnd_toStartOf="@+id/cancelBtn" />
 
     <android.support.design.widget.FloatingActionButton

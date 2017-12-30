@@ -76,11 +76,23 @@ public class AlarmManager {
                 processCancelAction(activity);
             }
         });
+
+        timeRange.setStarted(true);
+        timeRange.setLastStartDate(System.currentTimeMillis());
+
+        long lastStartDate = timeRange.getLastStartDate();
+        ((TextView) timeRange.getView().findViewById(R.id.lastStartDate)).setText(UIManager.DATE_FORMAT.format(lastStartDate));
+
+        DataManager.writeConfiguration(activity);
     }
 
     public static void runCurrentRange(Activity activity, long timeInMilliseconds) {
         //Create a new PendingIntent and add it to the AlarmManager
         int currentRange = DataManager.getCurrentRange();
+        final TimeRange timeRange = DataManager.getRanges().get(currentRange);
+        timeRange.setStarted(true);
+        timeRange.setLastStartDate(System.currentTimeMillis());
+        DataManager.log("Task " + timeRange.toString() + " was started");
         Intent intent = new Intent(activity, AlarmReceiverActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(activity,
                 currentRange, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -147,14 +159,26 @@ public class AlarmManager {
         try {
             TimeRange range = DataManager.getRanges().get(DataManager.getCurrentRange());
 
-            android.app.AlarmManager am =
-                    (android.app.AlarmManager) activity.getSystemService(Activity.ALARM_SERVICE);
-            am.cancel(range.getPendingIntent());
+            try {
+                android.app.AlarmManager am =
+                        (android.app.AlarmManager) activity.getSystemService(Activity.ALARM_SERVICE);
+                PendingIntent pendingIntent = range.getPendingIntent();
+                if (pendingIntent == null) {
+                    DataManager.log("PendingIntent null for range " + range.toString());
+                    Intent intent = new Intent(activity, AlarmReceiverActivity.class);
+                    pendingIntent = PendingIntent.getActivity(activity,
+                            DataManager.getCurrentRange(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                }
+                am.cancel(pendingIntent);
+            } catch (Throwable e) {
+                DataManager.err("can't cancel PendingIntent: " + e);
+            }
             range.getCountDownExecutor().stop();
             range.setCountDownExecutor(null);
             range.setPendingIntent(null);
 
             isAlarmActive = false;
+            range.setStarted(false);
 
             View view = range.getView();
             View completeBtn = view.findViewById(R.id.completeBtn);
@@ -170,6 +194,8 @@ public class AlarmManager {
             view.setBackgroundColor(ContextCompat.getColor(activity, R.color.green));
         } catch (Throwable e) {
             DataManager.err("can't execute processCancelAction(): " + e);
+        } finally {
+            DataManager.writeConfiguration(activity);
         }
     }
 }

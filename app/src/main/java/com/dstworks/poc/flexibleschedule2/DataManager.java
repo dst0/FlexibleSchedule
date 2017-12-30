@@ -5,7 +5,9 @@ import android.support.design.widget.Snackbar;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 public class DataManager {
     private static final String CONFIG_FILE_NAME = "config.txt";
     private static final String LOG_FILE_NAME = "log.txt";
+    public static String EMPTY_DATE = "0";
 
     public static List<TimeRange> getRanges() {
         return ranges;
@@ -124,13 +127,30 @@ public class DataManager {
                     String[] values = line.split("`");
                     TimeRange range = new TimeRange(values[0], (byte) Integer.parseInt(values[1]),
                             (byte) Integer.parseInt(values[2]), (byte) Integer.parseInt(values[3]));
+                    // compatibility with old format
+                    if (values.length > 4) {
+                        // continue read
+                        int i = 4;
+
+                        if (!EMPTY_DATE.equals(values[i++])) {
+                            range.setLastStartDate(Long.parseLong(values[i - 1]));
+                        }
+
+                        if (!EMPTY_DATE.equals(values[i++])) {
+                            range.setLastCompleteDate(Long.parseLong(values[i - 1]));
+                        }
+
+                        range.setStarted(Boolean.parseBoolean(values[i]));
+                    }
                     ranges.add(range);
                 }
             }
             reader.close();
             System.out.println("readConfiguration() success: \n" + debugValue);
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Config file absent yet, nothing to read.");
+        } catch (Exception e) {
+            System.out.println("Config file parsing error: " + e);
         }
 
         try (FileInputStream fileInputStream =

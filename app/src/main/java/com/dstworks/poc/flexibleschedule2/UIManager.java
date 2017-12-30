@@ -23,7 +23,7 @@ import java.util.List;
 class UIManager {
     private final AppCompatActivity activity;
     public static LinearLayout rangeList;
-    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss yyyy MMM dd");
+    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
 
     public UIManager(AppCompatActivity activity) {
         this.activity = activity;
@@ -33,10 +33,34 @@ class UIManager {
     public void update() {
         clear();
 
+        TimeRange startedRange = null;
         List<TimeRange> ranges = DataManager.getRanges();
         for (TimeRange range : ranges) {
             ConstraintLayout view = createRangeView(range);
+            if (range.isStarted() && range.getCountDownExecutor() == null) {
+                startedRange = range;
+            }
             rangeList.addView(view);
+        }
+
+        if (startedRange != null) {
+            Calendar cal = Calendar.getInstance();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(startedRange.getLastStartDate());
+            calendar.add(Calendar.HOUR, startedRange.getHours());
+            calendar.add(Calendar.MINUTE, startedRange.getMinutes());
+            calendar.add(Calendar.SECOND, startedRange.getSeconds());
+            if (calendar.getTimeInMillis() > System.currentTimeMillis()) {
+                // run countdown
+                final CountDownExecutor countDownExecutor = new CountDownExecutor();
+                // save countdown executor to timeRange object
+                startedRange.setCountDownExecutor(countDownExecutor);
+                countDownExecutor.run(startedRange, calendar.getTimeInMillis());
+                AlarmManager.runCurrentRange(activity, cal.getTimeInMillis());
+            } else {
+                AlarmManager.processCompleteAction(activity);
+            }
         }
     }
 
@@ -61,10 +85,15 @@ class UIManager {
             TextView valueField = view.findViewById(R.id.value);
             valueField.setText(range.getText());
 
+            TextView lastStartDateField = view.findViewById(R.id.lastStartDate);
+            long lastStartDate = range.getLastStartDate();
+            lastStartDateField.setText(lastStartDate == 0 ? "" :
+                    DATE_FORMAT.format(lastStartDate));
+
             TextView lastCompleteDateField = view.findViewById(R.id.lastCompleteDate);
             long lastCompleteDate = range.getLastCompleteDate();
             lastCompleteDateField.setText(lastCompleteDate == 0 ? "" :
-                    DATE_FORMAT.format(Calendar.getInstance().getTime()));
+                    DATE_FORMAT.format(lastCompleteDate));
 
             final View delBtn = view.findViewById(R.id.delBtn);
             delBtn.setOnClickListener(new View.OnClickListener() {

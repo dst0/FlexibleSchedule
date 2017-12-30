@@ -2,6 +2,8 @@ package com.dstworks.poc.flexibleschedule2;
 
 import android.os.Handler;
 
+import java.util.Date;
+
 
 /**
  * Countdown impl for range view
@@ -44,11 +46,20 @@ public class CountDownExecutor {
     }
 
     public void run(TimeRange timeRange) {
+        run(timeRange, -1);
+    }
+
+    public void run(TimeRange timeRange, long endTime) {
         try {
             timerTimeRange = timeRange;
 
             startTime = System.currentTimeMillis();
-            endTime = timerTimeRange.getExpectedTimeInMilliseconds();
+            if (endTime == -1) {
+                this.endTime = timerTimeRange.getExpectedTimeInMilliseconds();
+            } else {
+                this.endTime = endTime;
+            }
+
             timerHandler.postDelayed(timerRunnable, 0);
         } catch (Throwable e) {
             DataManager.err("can't run countdown handler: " + e);

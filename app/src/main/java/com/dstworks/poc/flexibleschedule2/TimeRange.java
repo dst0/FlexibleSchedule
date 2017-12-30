@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -23,6 +24,9 @@ public class TimeRange {
 
     private CountDownExecutor countDownExecutor;
     private long lastCompleteDate;
+    private long lastStartDate;
+    private boolean started = false;
+    private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy MMM dd, HH:mm:ss");
 
     public TimeRange(String name, byte hours, byte minutes, byte seconds) {
         this.name = name;
@@ -88,7 +92,10 @@ public class TimeRange {
 
     @Override
     public String toString() {
-        return name + "`" + hours + "`" + minutes + "`" + seconds;
+        return name + "`" + hours + "`" + minutes + "`" + seconds + "`"+
+                DATE_FORMAT.format(lastStartDate) + "'" +
+                DATE_FORMAT.format(lastCompleteDate) + "'" +
+                started;
     }
 
     public PendingIntent getPendingIntent() {
@@ -118,8 +125,23 @@ public class TimeRange {
         return String.format("%02d", value);
     }
 
+    private String format(long value) {
+        return DATE_FORMAT.format(value);
+    }
+
     public boolean isStarted() {
-        return getPendingIntent() != null;
+        return started;
+    }
+    public boolean setStarted(boolean started) {
+        return this.started = started;
+    }
+
+    public long getLastStartDate() {
+        return lastStartDate;
+    }
+
+    public void setLastStartDate(long lastStartDate) {
+        this.lastStartDate = lastStartDate;
     }
 
     public long getLastCompleteDate() {
